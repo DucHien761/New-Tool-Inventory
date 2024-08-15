@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
+import Login from './component/Login/Login'
+import Dashboard from './component/Dashboard/index'
+import Header from './component/Header/Header'
 
-function App() {
+export const App = () => {
+  const isAuthenticated = localStorage.getItem('token')
+  const username = localStorage.getItem('username')
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/dashboard"
+          element={isAuthenticated ? (
+            <>
+              <Header username={username} />
+              <Dashboard />
+            </>
+          ) : (
+            <Navigate to="/login" />
+          )}
+        />
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+    </Router>
+  )
 }
 
-export default App;
+export default App
