@@ -2,17 +2,24 @@ import React, { useRef } from 'react'
 import { AddFile } from '../../../api/UploadedFiles'
 import './styles.scss'
 
-export const UploadFiles = ({ setUploadedFiles, setUploadMessage }) => {
+export const UploadFiles = ({ setUploadMessage, setData, setFileNames }) => {
   const fileInputRef = useRef(null)
   const dropZoneRef = useRef(null)
 
   const handleFileUpload = async (file) => {
     if (!file) return
 
+    const allowedTypes = ['text/csv', 'application/vnd.ms-excel']
+    if (!allowedTypes.includes(file.type)) {
+      setUploadMessage('Invalid file type. Please upload a CSV file.')
+      return
+    }
+
     try {
-      const result = await AddFile(file)
-      const fileInfos = result.fileInfos || [] 
-      setUploadedFiles(fileInfos)
+      const res = await AddFile(file)
+      const { fileName, csvData } = res
+      setFileNames(fileName || '')
+      setData(csvData) 
       setUploadMessage('File uploaded successfully!')
     } catch (error) {
       console.error('Error during file upload:', error)
@@ -39,6 +46,17 @@ export const UploadFiles = ({ setUploadedFiles, setUploadMessage }) => {
   const handleDragOver = (e) => {
     e.preventDefault()
     e.stopPropagation()
+    if (dropZoneRef.current) {
+      dropZoneRef.current.classList.add('drag-over')
+    }
+  }
+
+  const handleDragLeave = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (dropZoneRef.current) {
+      dropZoneRef.current.classList.remove('drag-over')
+    }
   }
 
   return (
@@ -58,6 +76,7 @@ export const UploadFiles = ({ setUploadedFiles, setUploadMessage }) => {
         className="drop-zone"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
       >
         <p>Drag & Drop your file here</p>
       </div>

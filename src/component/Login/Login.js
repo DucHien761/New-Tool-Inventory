@@ -8,7 +8,6 @@ export const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  console.log(username)
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -20,13 +19,11 @@ export const Login = () => {
           password: password
         }
       })
-      console.log('Response:', response)
       if (response.status === 200) {
         const data = response.data
         localStorage.setItem('token', data.token)
         localStorage.setItem('refreshToken', data.refreshToken)
         localStorage.setItem('username', data.username)
-        console.log('Redirecting to /dashboard')
         navigate('/dashboard')
       } else {
         alert('Invalid credentials: Please check your username and password.')

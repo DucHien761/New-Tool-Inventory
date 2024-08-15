@@ -13,7 +13,6 @@ const Header = ({ username }) => {
     navigate('/login')
   }
 
-  console.log(username)
 
   return (
     <div className="header">
