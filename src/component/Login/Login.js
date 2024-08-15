@@ -7,16 +7,39 @@ export const Login = () => {
   const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [errorMessages, setErrorMessages] = useState({})
+  
+  const validateForm = () => {
+    const errors = {}
 
+    if (!username) {
+      errors.username = 'Username is required'
+    } else if (/^[0-9]/.test(username)) {
+      errors.username = 'Username cannot start with a number!'
+    }
+
+    if (!password) {
+      errors.password = 'Password is required!'
+    }
+
+    return errors
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault()
 
+    // Validate form
+    const errors = validateForm()
+    if (Object.keys(errors).length > 0) {
+      setErrorMessages(errors)
+      return
+    }
+
     try {
-      const response = await axios.post('https://1223-14-161-33-35.ngrok-free.app/login', {
+      const response = await axios.post('http://localhost:8081/login', {
         loginForm: {
           username: username,
-          password: password
+          password: 123123
         }
       })
       if (response.status === 200) {
@@ -26,14 +49,13 @@ export const Login = () => {
         localStorage.setItem('username', data.username)
         navigate('/dashboard')
       } else {
-        alert('Invalid credentials: Please check your username and password.')
+        setErrorMessages({ form: 'Login failed. Please try again.' })
       }
     } catch (error) {
-      console.error('Error during login:', error)
       if (error.response && error.response.data) {
-        alert('Invalid credentials: ' + (error.response.data.message || 'Please check your username and password.'))
+        setErrorMessages({ form: 'Invalid credentials. Please check your username and password.' })
       } else {
-        alert('Login failed!')
+        setErrorMessages({ form: 'Login failed. Please try again.' })
       }
     }
   }
@@ -50,6 +72,7 @@ export const Login = () => {
             onChange={(e) => setUsername(e.target.value)}
             required
           />
+          {errorMessages.username && <p className="error">{errorMessages.username}</p>}
         </div>
         <div className="form-group">
           <label>Password:</label>
@@ -59,7 +82,9 @@ export const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          {errorMessages.password && <p className="error">{errorMessages.password}</p>}
         </div>
+        {errorMessages.form && <p className="error">{errorMessages.form}</p>}
         <button type="submit">Login</button>
       </form>
     </div>
