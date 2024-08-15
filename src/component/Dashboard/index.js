@@ -16,7 +16,21 @@ export const Dashboard = () => {
     "Product Code",
     "Transfer Method",
     "Code",
-  ];
+  ]
+
+const columnKeyMapping = {
+  "No": "no",
+  "Name": "name",
+  "Type": "type",
+  "Number": "number",
+  "Keeper One": "keeperOne",
+  "Keeper Second": "keeperSecond",
+  "Borrow Date": "borrowDate",
+  "Date Received": "dateReceived",
+  "Product Code": "productCode",
+  "Transfer Method": "transferMethod",
+  "Code": "code"
+}
 
   const [data, setData] = useState([]);
   const [fileNames, setFileNames] = useState("");
@@ -90,6 +104,113 @@ export const Dashboard = () => {
 
   console.table(data);
 
+  const dataTest = [
+      {
+        no: 1,
+        name: "Razer Nari HopeT",
+        type: "Headset",
+        number: "1",
+        keeperOne: "Liem",
+        keeperSecond: "",
+        borrowDate: "",
+        dateReceived: "5/11/2019",
+        productCode: "None",
+        transferMethod: "Team took back",
+        code: ""
+      },
+      {
+        no: 2,
+        name: "Razer Nari Essential HopeT3",
+        type: "Headset",
+        number: "1",
+        keeperOne: "Chi",
+        keeperSecond: "Loc",
+        borrowDate: "26/7/2024",
+        dateReceived: "5/11/2019",
+        productCode: "5/11/2019",
+        transferMethod: "Team took back",
+        code: ""
+      },
+      {
+        no: 3,
+        name: "Razer Nari Ultimate HopeT1",
+        type: "Headset",
+        number: "3",
+        keeperOne: "Minh",
+        keeperSecond: "Hien Khoa",
+        borrowDate: "10/7/2024",
+        dateReceived: "5/11/2019",
+        productCode: "5/11/2019",
+        transferMethod: "Team took back",
+        code: "1 device broken"
+      },
+      {
+        no: 4,
+        name: "Razer Kraken TE",
+        type: "Headset",
+        number: "1",
+        keeperOne: "Dung",
+        keeperSecond: "Thao",
+        borrowDate: "27/6/2024",
+        dateReceived: "5/11/2019",
+        productCode: "5/11/2019",
+        transferMethod: "Team took back",
+        code: ""
+      },
+      {
+        no: 5,
+        name: "Razer Blackwidow Elite",
+        type: "Keyboard",
+        number: "2",
+        keeperOne: "Dung Minh",
+        keeperSecond: "",
+        borrowDate: "",
+        dateReceived: "5/11/2019",
+        productCode: "RZ03-03380200-R3U1,RZ03-02622100-R3U1",
+        transferMethod: "Team took back",
+        code: ""
+      },
+      {
+        no: 6,
+        name: "Razer Blackwidow Chroma V1",
+        type: "Keyboard",
+        number: "1",
+        keeperOne: "Thai",
+        keeperSecond: "",
+        borrowDate: "",
+        dateReceived: "5/11/2019",
+        productCode: "None",
+        transferMethod: "Team took back",
+        code: ""
+      },
+      {
+        no: 7,
+        name: "Razer Blackwidow Chroma V2",
+        type: "Keyboard",
+        number: "1",
+        keeperOne: "Minh",
+        keeperSecond: "",
+        borrowDate: "",
+        dateReceived: "5/11/2019",
+        productCode: "None",
+        transferMethod: "Team took back",
+        code: ""
+      },
+      {
+        no: 8,
+        name: "Razer DeathAdder Elite",
+        type: "Mouse",
+        number: "1",
+        keeperOne: "Kha",
+        keeperSecond: "",
+        borrowDate: "",
+        dateReceived: "5/11/2019",
+        productCode: "RZ01-02010100",
+        transferMethod: "Team took back",
+        code: ""
+      }
+    ]
+
   return (
     <div className="dashboard-container">
       <h2>New Inventory Tool</h2>
@@ -115,43 +236,39 @@ export const Dashboard = () => {
           Add New Row
         </button>
         <table>
-          <thead>
-            <tr>
-              {columns.map((col, index) => (
-                <th className="column-name" key={index}>
-                  {col}
-                </th>
+        <thead>
+          <tr>
+            {columns.map((col, index) => (
+              <th key={index}>{col}</th>
+            ))}
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {dataTest.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              {columns.map((col, colIndex) => (
+                <td key={colIndex}>
+                  <input
+                    type="text"
+                    value={row[columnKeyMapping[col]] || ""}
+                    onChange={(e) => handleCellChange(e, rowIndex, columnKeyMapping[col])}
+                    className="table-input"
+                  />
+                </td>
               ))}
-              <th>Actions</th>
+              <td>
+                <button
+                  onClick={() => handleDeleteRow(rowIndex)}
+                  className="delete-row-button"
+                >
+                  Delete
+                </button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {data &&
-              data.length > 0 &&
-              data.map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  {columns.map((col, colIndex) => (
-                    <td key={colIndex}>
-                      <input
-                        type="text"
-                        value={row[col] || ""}
-                        onChange={(e) => handleCellChange(e, rowIndex, col)}
-                        className="table-input"
-                      />
-                    </td>
-                  ))}
-                  <td>
-                    <button
-                      onClick={() => handleDeleteRow(rowIndex)}
-                      className="delete-row-button"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+          ))}
+        </tbody>
+      </table>
       </div>
 
       <div className="button-action">
